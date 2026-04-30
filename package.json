@@ -1,0 +1,27 @@
+{
+  "name": "cake_craft_api",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development tsx watch src/server.ts",
+    "build": "rimraf dist && tsc",
+    "start": "cross-env NODE_ENV=production dist/server.js"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "cross-env": "^10.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "rimraf": "^6.1.3"
+  }
+}
