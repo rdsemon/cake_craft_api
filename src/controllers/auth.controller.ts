@@ -5,8 +5,9 @@ import AppError from "../utils/AppError";
 import asyncHandler from "../utils/asyncHandler";
 import { comparePass, createHashPass } from "../utils/passwordGenerator";
 import type { signUpBody, loginBody } from "../zodSchema/auth.schema";
-import { generateJwtToken } from "../utils/sendJWT";
+import { generateJwtToken, verifyToken } from "../utils/sendJwt";
 import sendJwtCooke from "../utils/sendJwtCookie";
+import type { JwtPayload } from "jsonwebtoken";
 
 export const signUp = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body as signUpBody;
@@ -55,3 +56,55 @@ export const login = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ status: "successful", message: "login successful" });
 });
+
+export const protect = asyncHandler(async (req, res, next) => {
+  const { token } = req.cookies;
+
+  const decode = verifyToken(token) as JwtPayload;
+  const { userId } = decode;
+
+  const [user] = await db
+    .select({
+      id: usersTable.id,
+      email: usersTable.email,
+      role: usersTable.role,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId));
+
+  if (!user) {
+    return next(new AppError("Please loign first", 401));
+  }
+
+  req.user = user;
+
+  next();
+});
+
+export const restrictedTo = (rules: string[]) =>
+  asyncHandler((req, res, next) => {
+    if (!rules.includes(req.user.role)) {
+      return next(new AppError("you are not permited to do this action", 403));
+    }
+
+    next();
+  });
+
+export const checkOwnership = (paramKey = "id") =>
+  asyncHandler((req, res, next) => {
+    if (!req.user) {
+      return next(new AppError("Not authenticated", 401));
+    }
+
+    // allow admin always
+    if (req.user.role === "admin") {
+      return next();
+    }
+
+    // only allow if user owns the resource
+    if (req.user.id !== req.params[paramKey]) {
+      return next(new AppError("You can only access your own data", 403));
+    }
+
+    next();
+  });
