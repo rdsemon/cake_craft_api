@@ -3,6 +3,7 @@ import db from "../database";
 import { usersTable } from "../models/user.model";
 import { eq } from "drizzle-orm";
 import AppError from "../utils/AppError";
+import type { updateUserBody } from "../zodSchema/user.schema";
 
 export const getAllUsers = asyncHandler(async (req, res, next) => {
   const users = await db
@@ -40,7 +41,7 @@ export const getUserById = asyncHandler(async (req, res, next) => {
 });
 
 export const updatUser = asyncHandler(async (req, res, next) => {
-  const { name, email } = req.body;
+  const { name, email } = req.body as updateUserBody;
 
   const id = req.params.id as string;
 
@@ -102,4 +103,10 @@ export const deleteUserById = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ status: "sucessful", message: "Account delete successful" });
+});
+
+export const deleteAllUsers = asyncHandler(async (req, res, next) => {
+  await db.delete(usersTable);
+
+  res.status(200).json({ status: "successful", message: "All users deleted" });
 });
