@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import AppError from "../utils/AppError";
 
 const sendErrorDev = (error: any, res: Response) => {
   res.status(error.statusCode || 500).json({
@@ -21,6 +22,9 @@ const sendErrorProd = (error: any, res: Response) => {
   res.status(500).json({ status: "error", message: "something went wrong" });
 };
 
+const handleJwtExpireError = (error: any) =>
+  new AppError(`${error.message} please login again`, 401);
+
 const handleGlobalError = (
   err: any,
   req: Request,
@@ -35,6 +39,10 @@ const handleGlobalError = (
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = err;
+
+    if (error.name === "TokenExpiredError") {
+      error = handleJwtExpireError(error);
+    }
     sendErrorProd(error, res);
   }
 };
