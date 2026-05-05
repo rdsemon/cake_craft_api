@@ -29,3 +29,6 @@ export const loginSchema = z.object({
       .min(6, { error: "password must be at least 6 characters" }),
   }),
 });
+
+export type signUpBody = z.infer<typeof signUpSchema>["body"];
+export type loginBody = z.infer<typeof loginSchema>["body"];
