@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(express.json({ limit: "120kb" }));
+app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
