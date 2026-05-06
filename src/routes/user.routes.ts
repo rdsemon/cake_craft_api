@@ -32,14 +32,14 @@ const getUserByIdMiddlewares = [
 ];
 const deleteAllUsersMiddlewares = [protect, restrictedTo(["admin"])];
 
-router.get("/user", protect, restrictedTo(["admin"]), getAllUsers);
+router.get("/users", protect, restrictedTo(["admin"]), getAllUsers);
 
 router
-  .route("/user/:id")
+  .route("/users/:id")
   .get(getUserByIdMiddlewares, getUserById)
   .patch(updateUserMiddlewares, updatUser)
   .delete(deleteUserByIdMiddlewares, deleteUserById);
 
-router.delete("/user", deleteAllUsersMiddlewares, deleteAllUsers);
+router.delete("/users", deleteAllUsersMiddlewares, deleteAllUsers);
 
 export default router;
