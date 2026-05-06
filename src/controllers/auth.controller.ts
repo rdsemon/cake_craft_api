@@ -96,12 +96,10 @@ export const checkOwnership = (paramKey = "id") =>
       return next(new AppError("Not authenticated", 401));
     }
 
-    // allow admin always
     if (req.user.role === "admin") {
       return next();
     }
 
-    // only allow if user owns the resource
     if (req.user.id !== req.params[paramKey]) {
       return next(new AppError("You can only access your own data", 403));
     }
