@@ -41,46 +41,50 @@ export const getUserById = asyncHandler(async (req, res, next) => {
 });
 
 export const updatUser = asyncHandler(async (req, res, next) => {
-  const { name, email } = req.body as updateUserBody;
+  // const { name, email, image, publicId } = req.body as updateUserBody;
 
-  const id = req.params.id as string;
+  // console.log(req.body);
 
-  if (!id) {
-    return next(new AppError("Id is required", 404));
-  }
+  // const id = req.params.id as string;
 
-  const [user] = await db
-    .select({
-      id: usersTable.id,
-      email: usersTable.email,
-      name: usersTable.name,
-    })
-    .from(usersTable)
-    .where(eq(usersTable.id, id));
+  // if (!id) {
+  //   return next(new AppError("Id is required", 404));
+  // }
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
+  // const [user] = await db
+  //   .select({
+  //     id: usersTable.id,
+  //     email: usersTable.email,
+  //     name: usersTable.name,
+  //   })
+  //   .from(usersTable)
+  //   .where(eq(usersTable.id, id));
 
-  const { name: existingName, email: existingEmail } = user;
+  // if (!user) {
+  //   return next(new AppError("User not found", 404));
+  // }
 
-  if (existingEmail === email && existingName === name) {
-    return res.status(200).json({ message: "Already up to date" });
-  }
-  const [updatedUser] = await db
-    .update(usersTable)
-    .set({ email, name })
-    .where(eq(usersTable.id, id))
-    .returning({ id: usersTable.id });
+  // const { name: existingName, email: existingEmail } = user;
 
-  if (!updatedUser) {
-    return next(new AppError("Profile update fail", 400));
-  }
+  // if (existingEmail === email && existingName === name) {
+  //   return res.status(200).json({ message: "Already up to date" });
+  // }
+  // const [updatedUser] = await db
+  //   .update(usersTable)
+  //   .set({ email, name })
+  //   .where(eq(usersTable.id, id))
+  //   .returning({ id: usersTable.id });
 
-  res.status(200).json({
-    status: "successful",
-    message: `User update successful ${updatedUser?.id}`,
-  });
+  // if (!updatedUser) {
+  //   return next(new AppError("Profile update fail", 400));
+  // }
+
+  // res.status(200).json({
+  //   status: "successful",
+  //   message: `User update successful ${updatedUser?.id}`,
+  // });
+
+  res.send("get the call");
 });
 
 export const deleteUserById = asyncHandler(async (req, res, next) => {
