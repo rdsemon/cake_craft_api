@@ -14,11 +14,15 @@ import {
   deleteAllUsers,
 } from "../controllers/user.controller";
 
+import upload from "../utils/multer";
+import resizeAndUploadPhoto from "../middlewares/resizeAndUploadPhoto";
 const router = express.Router();
 
 const updateUserMiddlewares = [
   protect,
   restrictedTo(["customer", "admin"]),
+  upload.single("image"),
+  resizeAndUploadPhoto,
   validateInput(updateUserSchema),
 ];
 const deleteUserByIdMiddlewares = [
