@@ -12,6 +12,9 @@ export const updateUserSchema = z.object({
     image: z.string().optional(),
     publicId: z.string().optional(),
   }),
+  params: z.object({
+    id: z.string({ error: "id is required" }),
+  }),
 });
 
 export type updateUserBody = z.infer<typeof updateUserSchema>["body"];
