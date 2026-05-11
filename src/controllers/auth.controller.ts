@@ -9,6 +9,7 @@ import { generateJwtToken, verifyToken } from "../utils/sendJwt";
 import sendJwtCooke from "../utils/sendJwtCookie";
 import type { JwtPayload } from "jsonwebtoken";
 
+// user signUp
 export const signUp = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body as signUpBody;
 
@@ -28,6 +29,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
   res.status(201).json({ status: "sucessful", id: user.id });
 });
 
+// user login
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body as loginBody;
 
