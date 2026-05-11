@@ -4,7 +4,7 @@ import { usersTable } from "../models/user.model";
 import { eq } from "drizzle-orm";
 import AppError from "../utils/AppError";
 import type { updateUserBody } from "../zodSchema/user.schema";
-
+// get all the users from database
 export const getAllUsers = asyncHandler(async (req, res, next) => {
   const users = await db
     .select({
@@ -17,6 +17,7 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: "successful", total: users.length, users });
 });
 
+//get user data by their id
 export const getUserById = asyncHandler(async (req, res, next) => {
   const id = req.params.id as string;
 
@@ -40,6 +41,7 @@ export const getUserById = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: "successful", user });
 });
 
+// update user data in database
 export const updatUser = asyncHandler(async (req, res, next) => {
   const { name, email, image, publicId } = req.body as updateUserBody;
 
@@ -83,6 +85,8 @@ export const updatUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+//Delete user from the database by their id
+
 export const deleteUserById = asyncHandler(async (req, res, next) => {
   const id = req.params.id as string;
   if (!id) {
@@ -105,14 +109,9 @@ export const deleteUserById = asyncHandler(async (req, res, next) => {
     .json({ status: "sucessful", message: "Account delete successful" });
 });
 
+//Delete all the users
 export const deleteAllUsers = asyncHandler(async (req, res, next) => {
   await db.delete(usersTable);
 
   res.status(200).json({ status: "successful", message: "All users deleted" });
-});
-
-export const updateUserTest = asyncHandler(async (req, res, next) => {
-  console.log(req.params.id);
-
-  res.send("get the call");
 });
