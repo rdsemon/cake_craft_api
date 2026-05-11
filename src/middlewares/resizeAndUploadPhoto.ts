@@ -2,7 +2,6 @@ import asyncHandler from "../utils/asyncHandler";
 import cloudinary from "../utils/cloudinaryConfig";
 import streamifier from "streamifier";
 import type { UploadApiResponse } from "cloudinary";
-
 import sharp from "sharp";
 
 const resizeAndUploadPhoto = asyncHandler(async (req, res, next) => {
@@ -19,7 +18,7 @@ const resizeAndUploadPhoto = asyncHandler(async (req, res, next) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: "user",
-        public_id: `user-${req.user.id}`,
+        public_id: `user-${req.user.id}-${Date.now()}`,
       },
       (error, result) => {
         if (error) {
@@ -36,8 +35,6 @@ const resizeAndUploadPhoto = asyncHandler(async (req, res, next) => {
 
     streamifier.createReadStream(buffer).pipe(stream);
   });
-
-  req.body = req.body || {};
 
   req.body.image = result.secure_url;
   req.body.publicId = result.public_id;
