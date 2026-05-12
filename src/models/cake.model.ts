@@ -7,3 +7,5 @@ export const cakeTable = pgTable("cakes", {
 
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
 });
+
+export default cakeTable;
