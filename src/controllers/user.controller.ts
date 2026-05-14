@@ -42,7 +42,7 @@ export const getUserById = asyncHandler(async (req, res, next) => {
 });
 
 // update user data in database
-export const updatUser = asyncHandler(async (req, res, next) => {
+export const updateUser = asyncHandler(async (req, res, next) => {
   const { name, email, image, publicId } = req.body as updateUserBody;
 
   const id = req.params.id as string;
