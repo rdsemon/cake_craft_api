@@ -1,49 +1,50 @@
 import express from "express";
+
 import {
-  restrictedTo,
   protect,
+  restrictedTo,
   checkOwnership,
 } from "../controllers/auth.controller";
-import { updateUserSchema } from "../zodSchema/user.schema";
-import validateInput from "../middlewares/zodValidator";
+
 import {
   getAllUsers,
   getUserById,
-  updatUser,
+  updateUser,
   deleteUserById,
   deleteAllUsers,
 } from "../controllers/user.controller";
 
-import upload from "../utils/multer";
+import validateInput from "../middlewares/zodValidator";
 import resizeAndUploadPhoto from "../middlewares/resizeAndUploadPhoto";
+
+import { updateUserSchema } from "../zodSchema/user.schema";
+
+import upload from "../utils/multer";
+
 const router = express.Router();
 
-const updateUserMiddlewares = [
-  protect,
-  restrictedTo(["customer", "admin"]),
-  upload.single("image"),
-  resizeAndUploadPhoto,
-  validateInput(updateUserSchema),
-];
-const deleteUserByIdMiddlewares = [
-  protect,
-  restrictedTo(["customer", "admin"]),
-];
-const getUserByIdMiddlewares = [
-  protect,
-  restrictedTo(["customer"]),
-  checkOwnership("id"),
-];
-const deleteAllUsersMiddlewares = [protect, restrictedTo(["admin"])];
+// Reusable role middlewares
+const adminOnly = [protect, restrictedTo(["admin"])];
 
-router.get("/users", protect, restrictedTo(["admin"]), getAllUsers);
+const customerAndAdmin = [protect, restrictedTo(["customer", "admin"])];
+
+// Routes
+router.get("/users", ...adminOnly, getAllUsers);
+
+router.delete("/users", ...adminOnly, deleteAllUsers);
 
 router
   .route("/users/:id")
-  .get(getUserByIdMiddlewares, getUserById)
-  .patch(updateUserMiddlewares, updatUser)
-  .delete(deleteUserByIdMiddlewares, deleteUserById);
+  .get(protect, restrictedTo(["customer"]), checkOwnership("id"), getUserById)
 
-router.delete("/users", deleteAllUsersMiddlewares, deleteAllUsers);
+  .patch(
+    ...customerAndAdmin,
+    upload.single("image"),
+    resizeAndUploadPhoto,
+    validateInput(updateUserSchema),
+    updateUser,
+  )
+
+  .delete(...customerAndAdmin, deleteUserById);
 
 export default router;
