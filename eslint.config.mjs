@@ -14,12 +14,13 @@ export default defineConfig(
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "arrow-body-style": "off",
       eqeqeq: ["error", "always"],
       curly: ["error", "all"],
       "no-var": "error",
 
       "object-shorthand": "error",
-      "arrow-body-style": ["error", "as-needed"],
+
       "prefer-template": "error",
       semi: ["error", "always"],
       quotes: ["error", "double"],
