@@ -8,19 +8,20 @@ import type { signUpBody, loginBody } from "../zodSchema/auth.schema";
 import { generateJwtToken, verifyToken } from "../utils/sendJwt";
 import sendJwtCooke from "../utils/sendJwtCookie";
 import type { JwtPayload } from "jsonwebtoken";
+import {
+  loginService,
+  signUpService,
+} from "../services/dbService/authDb.service";
 
 // user signUp
 export const signUp = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body as signUpBody;
 
-  const hassPass = await createHashPass(password);
+  const hashPass = await createHashPass(password);
 
-  const userData = { name, email, password: hassPass };
+  const userData = { name, email, password: hashPass };
 
-  const [user] = await db
-    .insert(usersTable)
-    .values(userData)
-    .returning({ id: usersTable.id });
+  const [user] = await signUpService(userData);
 
   if (!user?.id) {
     return next(new AppError("signUpd fail try agian", 401));
@@ -33,14 +34,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body as loginBody;
 
-  const [user] = await db
-    .select({
-      password: usersTable.password,
-      email: usersTable.email,
-      id: usersTable.id,
-    })
-    .from(usersTable)
-    .where(eq(usersTable.email, email));
+  const [user] = await loginService(email);
 
   if (!user?.email) {
     return next(new AppError("User dose not exist", 404));
