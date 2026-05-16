@@ -1,18 +1,17 @@
 import asyncHandler from "../utils/asyncHandler";
-import db from "../database";
-import { usersTable } from "../models/user.model";
-import { eq } from "drizzle-orm";
 import AppError from "../utils/AppError";
 import type { updateUserBody } from "../zodSchema/user.schema";
+import {
+  deleteAllUsersService,
+  deleteuserService,
+  getAllUsersService,
+  getUserService,
+  updateUserService,
+} from "../services/dbService/userDb.service";
+
 // get all the users from database
-export const getAllUsers = asyncHandler(async (req, res, next) => {
-  const users = await db
-    .select({
-      id: usersTable.id,
-      name: usersTable.name,
-      email: usersTable.email,
-    })
-    .from(usersTable);
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await getAllUsersService();
 
   res.status(200).json({ status: "successful", total: users.length, users });
 });
@@ -25,59 +24,26 @@ export const getUserById = asyncHandler(async (req, res, next) => {
     return next(new AppError("Id is required", 400));
   }
 
-  const user = await db
-    .select({
-      id: usersTable.id,
-      name: usersTable.name,
-      email: usersTable.email,
-    })
-    .from(usersTable)
-    .where(eq(usersTable.id, id));
-
-  if (!user || user.length === 0) {
-    return next(new AppError("User dose not found", 404));
-  }
+  const user = await getUserService(id);
 
   res.status(200).json({ status: "successful", user });
 });
 
 // update user data in database
 export const updateUser = asyncHandler(async (req, res, next) => {
-  const { name, email, image, publicId } = req.body as updateUserBody;
-
+  const userData = req.body as updateUserBody;
   const id = req.params.id as string;
 
   if (!id) {
     return next(new AppError("Id is required", 404));
   }
 
-  const [user] = await db
-    .select({
-      id: usersTable.id,
-      email: usersTable.email,
-      name: usersTable.name,
-    })
-    .from(usersTable)
-    .where(eq(usersTable.id, id));
+  const [user] = await getUserService(id);
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
-
-  const { name: existingName, email: existingEmail } = user;
-
-  if (existingEmail === email && existingName === name) {
+  if (userData.email === user?.email && userData.name === user?.name) {
     return res.status(200).json({ message: "Already up to date" });
   }
-  const [updatedUser] = await db
-    .update(usersTable)
-    .set({ email, name, image, publicId })
-    .where(eq(usersTable.id, id))
-    .returning({ id: usersTable.id });
-
-  if (!updatedUser) {
-    return next(new AppError("Profile update fail", 400));
-  }
+  const [updatedUser] = await updateUserService(userData, id);
 
   res.status(200).json({
     status: "successful",
@@ -86,23 +52,15 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 });
 
 //Delete user from the database by their id
-
 export const deleteUserById = asyncHandler(async (req, res, next) => {
   const id = req.params.id as string;
   if (!id) {
     return next(new AppError("Id is required", 400));
   }
-
-  const user = await db
-    .select({ id: usersTable.id })
-    .from(usersTable)
-    .where(eq(usersTable.id, id));
-
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
-
-  await db.delete(usersTable).where(eq(usersTable.id, id));
+  // check if the user exist
+  await getUserService(id);
+  // delete the user
+  await deleteuserService(id);
 
   res
     .status(200)
@@ -110,8 +68,7 @@ export const deleteUserById = asyncHandler(async (req, res, next) => {
 });
 
 //Delete all the users
-export const deleteAllUsers = asyncHandler(async (req, res, next) => {
-  await db.delete(usersTable);
-
+export const deleteAllUsers = asyncHandler(async (req, res) => {
+  await deleteAllUsersService();
   res.status(200).json({ status: "successful", message: "All users deleted" });
 });
