@@ -6,7 +6,7 @@ import {
   deleteCakeService,
   updateCakeService,
   deleteAllCakesService,
-} from "../services/dbService/cakeDb.services";
+} from "../services/dbService/cakeDb.service";
 
 export const getAllCakes = asyncHandler(async (req, res) => {
   const cakes = await getAllCakesService();
