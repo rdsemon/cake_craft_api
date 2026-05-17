@@ -35,13 +35,19 @@ router.delete("/users", ...adminOnly, deleteAllUsers);
 
 router
   .route("/users/:id")
-  .get(protect, restrictedTo(["customer"]), checkOwnership("id"), getUserById)
+  .get(
+    protect,
+    restrictedTo(["customer", "admin"]),
+    checkOwnership("id"),
+    getUserById,
+  )
 
   .patch(
     ...customerAndAdmin,
     upload.single("image"),
     resizeAndUploadPhoto,
     validateInput(updateUserSchema),
+    checkOwnership("id"),
     updateUser,
   )
 
