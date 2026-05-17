@@ -9,7 +9,7 @@ export const signUpSchema = z.object({
         .max(20, { error: "name shoud not be longer than 20 characters" })
         .trim(),
       email: z.email(),
-      role: z.enum(["customers", "admin"]).optional(),
+      role: z.enum(["customer", "admin"]).optional(),
       password: z
         .string()
         .min(6, { error: "password must be at least 6 characters" }),
