@@ -21,11 +21,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
   const userData = { name, email, password: hashPass };
 
-  const [user] = await signUpService(userData);
-
-  if (!user?.id) {
-    return next(new AppError("signUpd fail try agian", 401));
-  }
+  const user = await signUpService(userData);
 
   res.status(201).json({ status: "sucessful", id: user.id });
 });
@@ -34,11 +30,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body as loginBody;
 
-  const [user] = await loginService(email);
-
-  if (!user?.email) {
-    return next(new AppError("User dose not exist", 404));
-  }
+  const user = await loginService(email);
 
   const isCorrectPass = await comparePass(password, user.password);
 
