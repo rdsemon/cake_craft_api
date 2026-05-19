@@ -15,7 +15,7 @@ export const getAllUsersService = async () => {
 };
 
 export const getUserService = async (id: string) => {
-  const user = await db
+  const [user] = await db
     .select(selectedFields)
     .from(usersTable)
     .where(eq(usersTable.id, id));
@@ -31,7 +31,7 @@ export const updateUserService = async (
   setValues: updateUserBody,
   id: string,
 ) => {
-  const updatedUser = await db
+  const [updatedUser] = await db
     .update(usersTable)
     .set(setValues)
     .where(eq(usersTable.id, id))
