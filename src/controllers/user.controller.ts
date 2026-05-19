@@ -38,16 +38,16 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     return next(new AppError("Id is required", 404));
   }
 
-  const [user] = await getUserService(id);
+  const user = await getUserService(id);
 
-  if (userData.email === user?.email && userData.name === user?.name) {
+  if (userData.email === user.email && userData.name === user.name) {
     return res.status(200).json({ message: "Already up to date" });
   }
-  const [updatedUser] = await updateUserService(userData, id);
+  const updatedUser = await updateUserService(userData, id);
 
   res.status(200).json({
     status: "successful",
-    message: `User update successful ${updatedUser?.id}`,
+    message: `User update successful ${updatedUser.id}`,
   });
 });
 
