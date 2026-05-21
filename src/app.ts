@@ -6,6 +6,7 @@ import userRouter from "./routes/user.routes";
 import allRouteError from "./middlewares/catchRouteError";
 import handleGlobalError from "./controllers/error.controller";
 import cookieParser from "cookie-parser";
+import { apiLimiter, authLimiter } from "./middlewares/rateLimiter";
 const app = express();
 
 app.use(express.json({ limit: "120kb" }));
@@ -13,9 +14,16 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
+//rate limit
+app.use("/api/v1/", apiLimiter);
+app.use("/api/v1/auth", authLimiter);
+
+//routes
 app.use("/api/v1", cakeRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", userRouter);
+
+//errors
 app.use(allRouteError);
 app.use(handleGlobalError);
 
