@@ -6,6 +6,7 @@ import userRouter from "./routes/user.routes";
 import allRouteError from "./middlewares/catchRouteError";
 import handleGlobalError from "./controllers/error.controller";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import { apiLimiter, authLimiter } from "./middlewares/rateLimiter";
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json({ limit: "120kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use(helmet());
 
 //rate limit
 app.use("/api/v1/", apiLimiter);
