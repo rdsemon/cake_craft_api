@@ -8,6 +8,7 @@ import {
   timestamp,
   boolean,
 } from "drizzle-orm/pg-core";
+import { usersTable } from "./user.model";
 
 export const cakeTable = pgTable("cakes", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -32,6 +33,10 @@ export const cakeTable = pgTable("cakes", {
     .default(null),
 
   publicId: text("public_id"),
+
+  userId: uuid("user_id")
+    .references(() => usersTable.id)
+    .notNull(),
 
   createdAt: timestamp("created_at", {
     withTimezone: true,
