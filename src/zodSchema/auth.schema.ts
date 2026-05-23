@@ -8,7 +8,7 @@ export const signUpSchema = z.object({
         .min(3, { error: "name must be longer than 3 characters" })
         .max(20, { error: "name shoud not be longer than 20 characters" })
         .trim(),
-      email: z.email(),
+      email: z.email().toLowerCase(),
       role: z.enum(["customer", "admin"]).optional(),
       password: z
         .string()
