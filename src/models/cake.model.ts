@@ -35,7 +35,7 @@ export const cakeTable = pgTable("cakes", {
   publicId: text("public_id"),
 
   userId: uuid("user_id")
-    .references(() => usersTable.id)
+    .references(() => usersTable.id, { onDelete: "cascade" })
     .notNull(),
 
   createdAt: timestamp("created_at", {
