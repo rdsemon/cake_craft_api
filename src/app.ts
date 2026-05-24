@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cakeRouter from "./routes/cake.routes";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
+import cartRouter from "./routes/cart.route";
 import allRouteError from "./middlewares/catchRouteError";
 import handleGlobalError from "./controllers/error.controller";
 import cookieParser from "cookie-parser";
@@ -24,6 +25,7 @@ app.use("/api/v1/auth", authLimiter);
 app.use("/api/v1", cakeRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", userRouter);
+app.use("/api/v1", cartRouter);
 
 //errors
 app.use(allRouteError);
