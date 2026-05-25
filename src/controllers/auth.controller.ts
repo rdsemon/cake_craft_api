@@ -8,10 +8,7 @@ import type { signUpBody, loginBody } from "../zodSchema/auth.schema";
 import { generateJwtToken, verifyToken } from "../utils/sendJwt";
 import sendJwtCooke from "../utils/sendJwtCookie";
 import type { JwtPayload } from "jsonwebtoken";
-import {
-  loginService,
-  signUpService,
-} from "../services/dbService/authDb.service";
+import { signUpService, loginService } from "../services/auth/authDb.service";
 
 // user signUp
 export const signUp = asyncHandler(async (req, res, next) => {

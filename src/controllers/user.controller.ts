@@ -7,7 +7,7 @@ import {
   getAllUsersService,
   getUserService,
   updateUserService,
-} from "../services/dbService/userDb.service";
+} from "../services/user/userDb.service";
 
 // get all the users from database
 export const getAllUsers = asyncHandler(async (req, res) => {
