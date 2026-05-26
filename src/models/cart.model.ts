@@ -4,6 +4,7 @@ import {
   integer,
   timestamp,
   primaryKey,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 import { usersTable } from "./user.model";
@@ -38,7 +39,7 @@ export const cartItems = pgTable(
 
     quantity: integer("quantity").default(1).notNull(),
 
-    price: integer("price").notNull(),
+    price: numeric("price", { precision: 10, scale: 2, mode: "number" }),
 
     createdAt: timestamp("created_at").defaultNow(),
   },
