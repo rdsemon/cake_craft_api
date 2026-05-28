@@ -3,7 +3,11 @@ import db from "../../database";
 import { cartItems, carts } from "../../models/cart.model";
 import AppError from "../../utils/AppError";
 import cakeTable from "../../models/cake.model";
-import { findCakeById } from "./cartDb.helper.service";
+import {
+  checkExistingItem,
+  findCakeById,
+  findCartById,
+} from "./cartDb.helper.service";
 
 export const addToCartService = async (
   userId: string,
@@ -29,10 +33,7 @@ export const addToCartService = async (
 
   // check if the item alrady exist in cartItems
 
-  const [existingItem] = await db
-    .select()
-    .from(cartItems)
-    .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
+  const existingItem = await checkExistingItem(cakeId);
 
   if (existingItem) {
     const updateQuantity = existingItem.quantity + quantity;
@@ -68,11 +69,7 @@ export const addToCartService = async (
 };
 
 export const getCartService = async (userId: string) => {
-  const [cart] = await db.select().from(carts).where(eq(carts.userId, userId));
-
-  if (!cart) {
-    throw new AppError("Cart not found", 404);
-  }
+  const cart = await findCakeById(userId);
 
   // 2. Get cart items with cake info
   const [items] = await db
@@ -103,22 +100,9 @@ export const decreaseCartItemQuantityService = async (
   userId: string,
   cakeId: string,
 ) => {
-  // find user cart
-  const [cart] = await db.select().from(carts).where(eq(carts.userId, userId));
+  const cart = await findCartById(userId);
 
-  if (!cart) {
-    throw new AppError("Cart not found", 404);
-  }
-
-  // find cart item
-  const [cartItem] = await db
-    .select()
-    .from(cartItems)
-    .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
-
-  if (!cartItem) {
-    throw new AppError("Item not found in cart", 404);
-  }
+  const cartItem = await checkExistingItem(cakeId);
 
   // if quantity is 1 remove item
   if (cartItem.quantity === 1) {
@@ -159,21 +143,10 @@ export const removeCartItemService = async (userId: string, cakeId: string) => {
   }
 
   // find user cart
-  const [cart] = await db.select().from(carts).where(eq(carts.userId, userId));
+  const cart = await findCartById(userId);
 
-  if (!cart) {
-    throw new AppError("Cart not found", 404);
-  }
-
-  // check cart item exists
-  const [cartItem] = await db
-    .select()
-    .from(cartItems)
-    .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
-
-  if (!cartItem) {
-    throw new AppError("Item not found in cart", 404);
-  }
+  // check the existing item
+  await checkExistingItem(cakeId);
 
   // remove item
   await db
@@ -182,11 +155,7 @@ export const removeCartItemService = async (userId: string, cakeId: string) => {
 };
 
 export const clearCartService = async (userId: string) => {
-  const [cart] = await db.select().from(carts).where(eq(carts.userId, userId));
-
-  if (!cart) {
-    throw new AppError("User not found", 404);
-  }
+  const cart = await findCartById(userId);
 
   await db.delete(cartItems).where(eq(cartItems.cartId, cart.id));
 };
