@@ -3,6 +3,7 @@ import db from "../../database";
 import { cartItems, carts } from "../../models/cart.model";
 import AppError from "../../utils/AppError";
 import cakeTable from "../../models/cake.model";
+import { findCakeById } from "./cartDb.helper.service";
 
 export const addToCartService = async (
   userId: string,
@@ -24,15 +25,7 @@ export const addToCartService = async (
   }
 
   //find the cake item in database
-
-  const [cake] = await db
-    .select()
-    .from(cakeTable)
-    .where(eq(cakeTable.id, cakeId));
-
-  if (!cake) {
-    throw new AppError("Cake not found", 404);
-  }
+  const cake = await findCakeById(cakeId);
 
   // check if the item alrady exist in cartItems
 
@@ -137,14 +130,7 @@ export const decreaseCartItemQuantityService = async (
   }
 
   // find cake price
-  const [cake] = await db
-    .select()
-    .from(cakeTable)
-    .where(eq(cakeTable.id, cakeId));
-
-  if (!cake) {
-    throw new AppError("Cake not found", 404);
-  }
+  const cake = await findCakeById(cakeId);
 
   const updatedQuantity = cartItem.quantity - 1;
 
