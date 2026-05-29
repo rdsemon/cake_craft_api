@@ -7,6 +7,7 @@ import {
   checkExistingItem,
   findCakeById,
   findCartById,
+  updateCartItem,
 } from "./cartDb.helper.service";
 
 export const addToCartService = async (
@@ -44,14 +45,7 @@ export const addToCartService = async (
     }
 
     // update the item price and quantity
-
-    await db
-      .update(cartItems)
-      .set({
-        quantity: updateQuantity,
-        price: updatePrice,
-      })
-      .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
+    await updateCartItem(updatePrice, updateQuantity, cakeId);
 
     return;
   }
@@ -120,19 +114,11 @@ export const decreaseCartItemQuantityService = async (
 
   const updatedPrice = updatedQuantity * Number(cake.price);
 
-  // update quantity
-  const [updatedItem] = await db
-    .update(cartItems)
-    .set({
-      quantity: updatedQuantity,
-      price: updatedPrice,
-    })
-    .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)))
-    .returning();
-
-  if (!updatedItem) {
-    throw new AppError("Failed to update cart", 400);
-  }
+  const updatedItem = await updateCartItem(
+    updatedPrice,
+    updatedQuantity,
+    cakeId,
+  );
 
   return updatedItem;
 };
