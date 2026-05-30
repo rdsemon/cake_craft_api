@@ -1,12 +1,13 @@
 import { and, eq } from "drizzle-orm";
 import db from "../../database";
-import { cartItems, carts } from "../../models/cart.model";
-import AppError from "../../utils/AppError";
+import { cartItems } from "../../models/cart.model";
 import cakeTable from "../../models/cake.model";
+import AppError from "../../utils/AppError";
+
 import {
   checkExistingItem,
   findCakeById,
-  findCartById,
+  getOrCreateCart,
   updateCartItem,
 } from "./cartDb.helper.service";
 
@@ -15,133 +16,121 @@ export const addToCartService = async (
   quantity: number,
   cakeId: string,
 ) => {
-  //find the cart
-  let [cart] = await db.select().from(carts).where(eq(carts.userId, userId));
+  const cart = await getOrCreateCart(userId);
 
-  if (!cart) {
-    // careate cart
-    const [newCart] = await db.insert(carts).values({ userId }).returning();
-
-    if (!newCart) {
-      throw new AppError("Cart creation faile", 400);
-    }
-
-    cart = newCart;
-  }
-
-  //find the cake item in database
   const cake = await findCakeById(cakeId);
 
-  // check if the item alrady exist in cartItems
-
-  const existingItem = await checkExistingItem(cakeId);
+  const existingItem = await checkExistingItem(cakeId, cart.id);
 
   if (existingItem) {
-    const updateQuantity = existingItem.quantity + quantity;
-    const updatePrice = Number(updateQuantity) * cake.price;
+    const updatedQuantity = existingItem.quantity + quantity;
 
-    if (existingItem.quantity >= cake.quantity) {
-      throw new AppError("Limit reached", 400);
+    if (updatedQuantity > cake.quantity) {
+      throw new AppError("Requested quantity exceeds stock", 400);
     }
 
-    // update the item price and quantity
-    await updateCartItem(updatePrice, updateQuantity, cakeId);
+    await updateCartItem(cakeId, cart.id, {
+      quantity: updatedQuantity,
+      price: updatedQuantity * Number(cake.price),
+    });
 
     return;
   }
 
-  // insert the new item in the cart
+  if (quantity > cake.quantity) {
+    throw new AppError("Requested quantity exceeds stock", 400);
+  }
 
-  const cartItemsData = {
-    cakeId: cake.id,
+  await db.insert(cartItems).values({
+    cakeId,
     cartId: cart.id,
     quantity,
-    price: cake.price,
-  };
-
-  await db.insert(cartItems).values(cartItemsData);
+    price: Number(cake.price) * quantity,
+  });
 };
 
 export const getCartService = async (userId: string) => {
-  const cart = await findCakeById(userId);
+  const cart = await getOrCreateCart(userId);
 
-  // 2. Get cart items with cake info
-  const [items] = await db
+  const items = await db
     .select({
       cartId: cartItems.cartId,
-
       quantity: cartItems.quantity,
-
       price: cartItems.price,
 
       cakeId: cakeTable.id,
-
       title: cakeTable.title,
-
       cakePrice: cakeTable.price,
+      cakeQuantity: cakeTable.quantity,
     })
-
     .from(cartItems)
-
     .innerJoin(cakeTable, eq(cartItems.cakeId, cakeTable.id))
-
     .where(eq(cartItems.cartId, cart.id));
 
-  return { cart, items };
+  const totalAmount = items.reduce((sum, item) => sum + Number(item.price), 0);
+
+  return {
+    cart,
+    totalAmount,
+    items,
+  };
 };
 
 export const decreaseCartItemQuantityService = async (
   userId: string,
   cakeId: string,
 ) => {
-  const cart = await findCartById(userId);
+  const cart = await getOrCreateCart(userId);
 
-  const cartItem = await checkExistingItem(cakeId);
+  const cartItem = await checkExistingItem(cakeId, cart.id);
 
-  // if quantity is 1 remove item
+  if (!cartItem) {
+    throw new AppError("Item not found in cart", 404);
+  }
+
   if (cartItem.quantity === 1) {
     await db
       .delete(cartItems)
       .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
 
-    throw new AppError("Item remove from the cart", 400);
+    return;
   }
 
-  // find cake price
   const cake = await findCakeById(cakeId);
 
   const updatedQuantity = cartItem.quantity - 1;
 
   const updatedPrice = updatedQuantity * Number(cake.price);
 
-  const updatedItem = await updateCartItem(
-    updatedPrice,
-    updatedQuantity,
-    cakeId,
-  );
-
-  return updatedItem;
+  return await updateCartItem(cakeId, cart.id, {
+    quantity: updatedQuantity,
+    price: updatedPrice,
+  });
 };
 
 export const removeCartItemService = async (userId: string, cakeId: string) => {
-  if (!cakeId) {
-    throw new AppError("Cake Id is required", 404);
+  const cart = await getOrCreateCart(userId);
+
+  const item = await checkExistingItem(cakeId, cart.id);
+
+  if (!item) {
+    throw new AppError("Item not found in cart", 404);
   }
 
-  // find user cart
-  const cart = await findCartById(userId);
-
-  // check the existing item
-  await checkExistingItem(cakeId);
-
-  // remove item
   await db
     .delete(cartItems)
     .where(and(eq(cartItems.cartId, cart.id), eq(cartItems.cakeId, cakeId)));
 };
 
 export const clearCartService = async (userId: string) => {
-  const cart = await findCartById(userId);
+  const cart = await getOrCreateCart(userId);
 
-  await db.delete(cartItems).where(eq(cartItems.cartId, cart.id));
+  const deletedItems = await db
+    .delete(cartItems)
+    .where(eq(cartItems.cartId, cart.id))
+    .returning();
+
+  return {
+    deletedCount: deletedItems.length,
+  };
 };
