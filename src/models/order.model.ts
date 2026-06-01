@@ -70,10 +70,12 @@ export const orderItems = pgTable("order_items", {
   unitPrice: numeric("unit_price", {
     precision: 10,
     scale: 2,
+    mode: "number",
   }).notNull(),
 
   subtotal: numeric("subtotal", {
     precision: 10,
     scale: 2,
+    mode: "number",
   }).notNull(),
 });
