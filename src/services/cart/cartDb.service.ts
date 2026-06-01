@@ -16,9 +16,10 @@ export const addToCartService = async (
   quantity: number,
   cakeId: string,
 ) => {
-  const cart = await getOrCreateCart(userId);
-
-  const cake = await findCakeById(cakeId);
+  const [cart, cake] = await Promise.all([
+    await getOrCreateCart(userId),
+    await findCakeById(cakeId),
+  ]);
 
   const existingItem = await checkExistingItem(cakeId, cart.id);
 
