@@ -4,6 +4,7 @@ import {
   getMyOrdersService,
   getOrderByIdService,
 } from "../services/order/order.service";
+import AppError from "../utils/AppError";
 
 export const createOrder = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
@@ -20,7 +21,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   res.status(201).json({ status: "successfull", id: order.id });
 });
 
-export const getOdersById = asyncHandler(async (req, res) => {
+export const getMyOders = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
   const orders = await getMyOrdersService(userId);
@@ -28,4 +29,15 @@ export const getOdersById = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json({ status: "successfull", totalOrders: orders.length, data: orders });
+});
+
+export const getOrders = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const orderId = req.params.orderId as string;
+  if (!orderId) {
+    return next(new AppError("Order id not found", 404));
+  }
+  const orders = getOrderByIdService(userId, orderId);
+
+  res.status(200).json({ status: "successfull", data: orders });
 });
