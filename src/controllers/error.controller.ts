@@ -42,7 +42,7 @@ const handleZodError = (error: ZodError) => {
 const handleDuplicateError = (error: any) => {
   const field = error.detail?.match(/\((.*?)\)/)?.[1];
 
-  return new AppError(`${field || "Value"} already exists`, 409);
+  return new AppError(`${field || "Email"} already exists`, 409);
 };
 
 const handleForeignKeyError = () =>
@@ -66,38 +66,39 @@ const handleGlobalError = (
     return sendErrorDev(err, res);
   }
 
-  let error = { ...err };
-  error.message = err.message;
-  error.name = err.name;
+  if (process.env.NODE_ENV === "production") {
+    let error = err;
 
-  // JWT
-  if (error.name === "TokenExpiredError") {
-    error = handleJwtExpireError(error);
+    // JWT
+    if (error.name === "TokenExpiredError") {
+      error = handleJwtExpireError(error);
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      error = handleJwtError();
+    }
+
+    // Zod
+    if (err instanceof ZodError) {
+      error = handleZodError(err);
+    }
+
+    // PostgreSQL / Drizzle
+
+    if (error?.cause?.code === "23505") {
+      error = handleDuplicateError(error);
+    }
+
+    if (error?.cause?.code === "23503") {
+      error = handleForeignKeyError();
+    }
+
+    if (error?.cause?.code === "23502") {
+      error = handleNotNullError(error);
+    }
+
+    sendErrorProd(error, res);
   }
-
-  if (error.name === "JsonWebTokenError") {
-    error = handleJwtError();
-  }
-
-  // Zod
-  if (err instanceof ZodError) {
-    error = handleZodError(err);
-  }
-
-  // PostgreSQL / Drizzle
-  if (error.code === "23505") {
-    error = handleDuplicateError(error);
-  }
-
-  if (error.code === "23503") {
-    error = handleForeignKeyError();
-  }
-
-  if (error.code === "23502") {
-    error = handleNotNullError(error);
-  }
-
-  sendErrorProd(error, res);
 };
 
 export default handleGlobalError;
