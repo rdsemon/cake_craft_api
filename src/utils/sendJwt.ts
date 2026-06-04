@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { SignOptions } from "jsonwebtoken";
-import AppError from "./AppError";
+import AppError from "./AppError.js";
 
 const secretKey = process.env.JWT_SECRET;
 const expiresIn = process.env.EXPIRESIN;
@@ -15,7 +15,7 @@ if (!secretKey || !expiresIn) {
 export const generateJwtToken = (userId: string): string => {
   const token = jwt.sign({ userId }, secretKey, {
     expiresIn: expiresIn as SignOptions["expiresIn"],
-  });
+  } as SignOptions);
 
   return token;
 };

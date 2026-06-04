@@ -1,10 +1,10 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import {
   createOrderService,
   getMyOrdersService,
   getOrderByIdService,
-} from "../services/order/order.service";
-import AppError from "../utils/AppError";
+} from "../services/order/order.service.js";
+import AppError from "../utils/AppError.js";
 
 export const createOrder = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
@@ -37,7 +37,7 @@ export const getOrders = asyncHandler(async (req, res, next) => {
   if (!orderId) {
     return next(new AppError("Order id not found", 404));
   }
-  const orders = getOrderByIdService(userId, orderId);
+  const orders = await getOrderByIdService(userId, orderId);
 
   res.status(200).json({ status: "successfull", data: orders });
 });

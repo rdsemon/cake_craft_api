@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import {
   getAllCakesService,
   getOneCakeService,
@@ -6,7 +6,7 @@ import {
   deleteCakeService,
   updateCakeService,
   deleteAllCakesService,
-} from "../services/cake/cakeDb.service";
+} from "../services/cake/cakeDb.service.js";
 
 export const getAllCakes = asyncHandler(async (req, res) => {
   const cakes = await getAllCakesService();

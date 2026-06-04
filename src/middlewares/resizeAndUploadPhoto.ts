@@ -1,5 +1,5 @@
-import asyncHandler from "../utils/asyncHandler";
-import cloudinary from "../utils/cloudinaryConfig";
+import asyncHandler from "../utils/asyncHandler.js";
+import cloudinary from "../utils/cloudinaryConfig.js";
 import streamifier from "streamifier";
 import type { UploadApiResponse } from "cloudinary";
 import sharp from "sharp";

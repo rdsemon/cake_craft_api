@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
-import db from "../../database";
-import cakeTable from "../../models/cake.model";
-import AppError from "../../utils/AppError";
+import db from "../../database.js";
+import cakeTable from "../../models/cake.model.js";
+import AppError from "../../utils/AppError.js";
 import type {
   CreateCakeBody,
   UpdateCakeBody,
-} from "../../zodSchema/cake.schema";
+} from "../../zodSchema/cake.schema.js";
 
 export const getAllCakesService = async () => {
   return await db.select().from(cakeTable);

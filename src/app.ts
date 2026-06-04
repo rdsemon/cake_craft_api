@@ -1,15 +1,15 @@
 import express from "express";
 import morgan from "morgan";
-import cakeRouter from "./routes/cake.routes";
-import authRouter from "./routes/auth.routes";
-import userRouter from "./routes/user.routes";
-import cartRouter from "./routes/cart.route";
-import orderRouter from "./routes/order.routes";
-import allRouteError from "./middlewares/catchRouteError";
-import handleGlobalError from "./controllers/error.controller";
+import cakeRouter from "./routes/cake.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import userRouter from "./routes/user.routes.js";
+import cartRouter from "./routes/cart.route.js";
+import orderRouter from "./routes/order.routes.js";
+import allRouteError from "./middlewares/catchRouteError.js";
+import handleGlobalError from "./controllers/error.controller.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import { apiLimiter, authLimiter } from "./middlewares/rateLimiter";
+import { apiLimiter, authLimiter } from "./middlewares/rateLimiter.js";
 const app = express();
 
 app.use(express.json({ limit: "120kb" }));

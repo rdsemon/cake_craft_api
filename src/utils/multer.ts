@@ -1,7 +1,7 @@
 import multer from "multer";
 import type { Request } from "express";
 import type { FileFilterCallback } from "multer";
-import AppError from "./AppError";
+import AppError from "./AppError.js";
 
 const multerStorage = multer.memoryStorage();
 

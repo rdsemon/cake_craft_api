@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import AppError from "./AppError";
+import AppError from "./AppError.js";
 
 export const createHashPass = async (password: string) => {
   const solt = Number(process.env.SOLTROUNDS);

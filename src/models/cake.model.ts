@@ -8,7 +8,7 @@ import {
   timestamp,
   boolean,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./user.model";
+import { usersTable } from "./user.model.js";
 
 export const cakeTable = pgTable("cakes", {
   id: uuid("id").primaryKey().defaultRandom(),

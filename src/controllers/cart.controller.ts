@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 
 import {
   addToCartService,
@@ -6,7 +6,7 @@ import {
   decreaseCartItemQuantityService,
   getCartService,
   removeCartItemService,
-} from "../services/cart/cartDb.service";
+} from "../services/cart/cartDb.service.js";
 
 export const addToCart = asyncHandler(async (req, res) => {
   const userId = req.user.id;

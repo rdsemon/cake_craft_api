@@ -7,8 +7,8 @@ import {
   numeric,
 } from "drizzle-orm/pg-core";
 
-import { usersTable } from "./user.model";
-import cakeTable from "./cake.model";
+import { usersTable } from "./user.model.js";
+import cakeTable from "./cake.model.js";
 
 export const carts = pgTable("carts", {
   id: uuid("id").defaultRandom().primaryKey(),

@@ -1,6 +1,9 @@
 import express from "express";
-import { createCakeSchema, updateCakeSchema } from "../zodSchema/cake.schema";
-import validateInput from "../middlewares/zodValidator";
+import {
+  createCakeSchema,
+  updateCakeSchema,
+} from "../zodSchema/cake.schema.js";
+import validateInput from "../middlewares/zodValidator.js";
 
 const router = express.Router();
 
@@ -11,7 +14,7 @@ import {
   updateCakeInfo,
   deleteCakeById,
   deleteAllCakes,
-} from "../controllers/cake.controller";
+} from "../controllers/cake.controller.js";
 
 router
   .route("/cakes")

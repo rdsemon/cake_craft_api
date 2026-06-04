@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import db from "../../database";
-import { usersTable } from "../../models/user.model";
-import AppError from "../../utils/AppError";
-import type { updateUserBody } from "../../zodSchema/user.schema";
+import db from "../../database.js";
+import { usersTable } from "../../models/user.model.js";
+import AppError from "../../utils/AppError.js";
+import type { updateUserBody } from "../../zodSchema/user.schema.js";
 
 const selectedFields = {
   id: usersTable.id,

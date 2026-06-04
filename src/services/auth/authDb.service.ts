@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import db from "../../database";
-import { usersTable } from "../../models/user.model";
-import type { signUpUserData } from "../../types/authType";
-import AppError from "../../utils/AppError";
+import db from "../../database.js";
+import { usersTable } from "../../models/user.model.js";
+import type { signUpUserData } from "../../types/authType.js";
+import AppError from "../../utils/AppError.js";
 
 export const signUpService = async (userData: signUpUserData) => {
   const [user] = await db

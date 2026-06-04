@@ -1,8 +1,8 @@
 import { and, eq } from "drizzle-orm";
-import db from "../../database";
-import cakeTable from "../../models/cake.model";
-import AppError from "../../utils/AppError";
-import { cartItems, carts } from "../../models/cart.model";
+import db from "../../database.js";
+import cakeTable from "../../models/cake.model.js";
+import AppError from "../../utils/AppError.js";
+import { cartItems, carts } from "../../models/cart.model.js";
 
 export const findCakeById = async (cakeId: string) => {
   const [cake] = await db

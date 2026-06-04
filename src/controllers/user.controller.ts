@@ -1,13 +1,13 @@
-import asyncHandler from "../utils/asyncHandler";
-import AppError from "../utils/AppError";
-import type { updateUserBody } from "../zodSchema/user.schema";
+import asyncHandler from "../utils/asyncHandler.js";
+import AppError from "../utils/AppError.js";
+import type { updateUserBody } from "../zodSchema/user.schema.js";
 import {
   deleteAllUsersService,
   deleteuserService,
   getAllUsersService,
   getUserService,
   updateUserService,
-} from "../services/user/userDb.service";
+} from "../services/user/userDb.service.js";
 
 // get all the users from database
 export const getAllUsers = asyncHandler(async (req, res) => {

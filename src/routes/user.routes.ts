@@ -4,7 +4,7 @@ import {
   protect,
   restrictedTo,
   checkOwnership,
-} from "../controllers/auth.controller";
+} from "../controllers/auth.controller.js";
 
 import {
   getAllUsers,
@@ -12,14 +12,14 @@ import {
   updateUser,
   deleteUserById,
   deleteAllUsers,
-} from "../controllers/user.controller";
+} from "../controllers/user.controller.js";
 
-import validateInput from "../middlewares/zodValidator";
-import resizeAndUploadPhoto from "../middlewares/resizeAndUploadPhoto";
+import validateInput from "../middlewares/zodValidator.js";
+import resizeAndUploadPhoto from "../middlewares/resizeAndUploadPhoto.js";
 
-import { updateUserSchema } from "../zodSchema/user.schema";
+import { updateUserSchema } from "../zodSchema/user.schema.js";
 
-import upload from "../utils/multer";
+import upload from "../utils/multer.js";
 
 const router = express.Router();
 

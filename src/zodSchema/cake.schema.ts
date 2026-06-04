@@ -21,6 +21,8 @@ export const createCakeSchema = z.object({
       .nonnegative({ error: "In stock cannot be negative" }),
 
     coverImage: z.url().optional(),
+
+    userId: z.string(),
   }),
 });
 

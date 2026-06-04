@@ -1,7 +1,7 @@
 import "dotenv/config";
-import db from "../database";
-import cakeTable from "../models/cake.model";
-import { cakesData } from "../data/cake.data";
+import db from "../database.js";
+import cakeTable from "../models/cake.model.js";
+import { cakesData } from "../data/cake.data.js";
 
 const insertCakesData = async () => {
   try {

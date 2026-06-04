@@ -1,6 +1,6 @@
 import "dotenv/config";
-import cakeTable from "../models/cake.model";
-import db from "../database";
+import cakeTable from "../models/cake.model.js";
+import db from "../database.js";
 const deleteCakesData = async () => {
   try {
     await db.delete(cakeTable);

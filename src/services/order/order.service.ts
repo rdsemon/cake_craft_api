@@ -1,10 +1,10 @@
 import { desc, eq } from "drizzle-orm";
-import { orders, orderItems } from "../../models/order.model";
-import { carts, cartItems } from "../../models/cart.model";
-import cakeTable from "../../models/cake.model";
+import { orders, orderItems } from "../../models/order.model.js";
+import { carts, cartItems } from "../../models/cart.model.js";
+import cakeTable from "../../models/cake.model.js";
 
-import AppError from "../../utils/AppError";
-import db from "../../database";
+import AppError from "../../utils/AppError.js";
+import db from "../../database.js";
 
 export const createOrderService = async (
   userId: string,

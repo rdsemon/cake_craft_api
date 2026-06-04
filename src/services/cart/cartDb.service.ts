@@ -1,15 +1,15 @@
 import { and, eq } from "drizzle-orm";
-import db from "../../database";
-import { cartItems } from "../../models/cart.model";
-import cakeTable from "../../models/cake.model";
-import AppError from "../../utils/AppError";
+import db from "../../database.js";
+import { cartItems } from "../../models/cart.model.js";
+import cakeTable from "../../models/cake.model.js";
+import AppError from "../../utils/AppError.js";
 
 import {
   checkExistingItem,
   findCakeById,
   getOrCreateCart,
   updateCartItem,
-} from "./cartDb.helper.service";
+} from "./cartDb.helper.service.js";
 
 export const addToCartService = async (
   userId: string,

@@ -1,14 +1,14 @@
 import { eq } from "drizzle-orm";
-import db from "../database";
-import { usersTable } from "../models/user.model";
-import AppError from "../utils/AppError";
-import asyncHandler from "../utils/asyncHandler";
-import { comparePass, createHashPass } from "../utils/passwordGenerator";
-import type { signUpBody, loginBody } from "../zodSchema/auth.schema";
-import { generateJwtToken, verifyToken } from "../utils/sendJwt";
-import sendJwtCooke from "../utils/sendJwtCookie";
+import db from "../database.js";
+import { usersTable } from "../models/user.model.js";
+import AppError from "../utils/AppError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { comparePass, createHashPass } from "../utils/passwordGenerator.js";
+import type { signUpBody, loginBody } from "../zodSchema/auth.schema.js";
+import { generateJwtToken, verifyToken } from "../utils/sendJwt.js";
+import sendJwtCooke from "../utils/sendJwtCookie.js";
 import type { JwtPayload } from "jsonwebtoken";
-import { signUpService, loginService } from "../services/auth/authDb.service";
+import { signUpService, loginService } from "../services/auth/authDb.service.js";
 
 // user signUp
 export const signUp = asyncHandler(async (req, res, next) => {

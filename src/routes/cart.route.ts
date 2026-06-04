@@ -6,8 +6,8 @@ import {
   decreaseCartItemQuantity,
   removeCartItem,
   clearCart,
-} from "../controllers/cart.controller";
-import { protect } from "../controllers/auth.controller";
+} from "../controllers/cart.controller.js";
+import { protect } from "../controllers/auth.controller.js";
 
 router.use(protect);
 

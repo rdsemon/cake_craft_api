@@ -1,7 +1,7 @@
 import expres from "express";
-import { signUp, login } from "../controllers/auth.controller";
-import validateInput from "../middlewares/zodValidator";
-import { signUpSchema, loginSchema } from "../zodSchema/auth.schema";
+import { signUp, login } from "../controllers/auth.controller.js";
+import validateInput from "../middlewares/zodValidator.js";
+import { signUpSchema, loginSchema } from "../zodSchema/auth.schema.js";
 
 const router = expres.Router();
 

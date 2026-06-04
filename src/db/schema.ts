@@ -1,8 +1,8 @@
-import { userEnum, usersTable } from "../models/user.model";
-import cakeTable from "../models/cake.model";
-import { carts, cartItems } from "../models/cart.model";
-import { orders, orderItems } from "../models/order.model";
-import { reviews } from "../models/review.model";
+import { userEnum, usersTable } from "../models/user.model.js";
+import cakeTable from "../models/cake.model.js";
+import { carts, cartItems } from "../models/cart.model.js";
+import { orders, orderItems } from "../models/order.model.js";
+import { reviews } from "../models/review.model.js";
 
 export {
   usersTable,
