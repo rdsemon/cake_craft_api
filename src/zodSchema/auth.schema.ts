@@ -1,10 +1,10 @@
 import * as z from "zod";
+import { validateHtml } from "./zod.helper.js";
 
 export const signUpSchema = z.object({
   body: z
     .object({
-      name: z
-        .string()
+      name: validateHtml("Name")
         .min(3, { error: "name must be longer than 3 characters" })
         .max(20, { error: "name shoud not be longer than 20 characters" })
         .trim(),
