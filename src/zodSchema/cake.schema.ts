@@ -1,15 +1,14 @@
 import * as z from "zod";
+import { validateHtml } from "./zod.helper.js";
 
 export const createCakeSchema = z.object({
   body: z.object({
-    title: z
-      .string()
+    title: validateHtml("Title")
       .min(5, { error: "Title must be longer than 5 characters" })
       .max(100, { error: "Title should not be longer than 100 characters" })
       .trim(),
 
-    description: z
-      .string()
+    description: validateHtml("Description")
       .min(6, { error: "Description must be longer than 20 characters" })
       .trim(),
 
@@ -29,15 +28,13 @@ export const createCakeSchema = z.object({
 export const updateCakeSchema = z.object({
   body: z
     .object({
-      title: z
-        .string()
+      title: validateHtml("Title")
         .min(5, { error: "Title must be longer than 5 characters" })
         .max(100, { error: "Title should not be longer than 100 characters" })
         .trim()
         .optional(),
 
-      description: z
-        .string()
+      description: validateHtml("Description")
         .min(6, { error: "Description must be longer than 20 characters" })
         .trim()
         .optional(),
