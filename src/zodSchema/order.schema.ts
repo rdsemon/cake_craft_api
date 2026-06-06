@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { validateHtml } from "./zod.helper.js";
 
 export const createOrderSchema = z.object({
   body: z.object({
-    recipientName: z
-      .string()
+    recipientName: validateHtml("Name")
       .trim()
       .min(3, { error: "Name must be at least 3 characters long" })
       .max(20, { error: "Name cannot exceed 20 characters" }),
@@ -15,8 +15,10 @@ export const createOrderSchema = z.object({
         error: "Invalid  phone number",
       }),
 
-    address: z.string().trim().min(5, { error: "Address is required" }),
+    address: validateHtml("Address")
+      .trim()
+      .min(5, { error: "Address is required" }),
 
-    city: z.string().trim().min(2, { error: "City is required" }),
+    city: validateHtml("City").trim().min(2, { error: "City is required" }),
   }),
 });
