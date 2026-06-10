@@ -136,7 +136,7 @@ PORT=5000
 
 # 🗄️ Local PostgreSQL
 
-# DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+##### DATABASE_URL=postgresql://username:password@localhost:5432/database_name
 
 # ☁️ Neon PostgreSQL
 
@@ -156,7 +156,7 @@ CLOUD_API_SECRET=your_cloud_api_secret
 
 # Optional
 
-# CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+##### CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
 
 ---
 
