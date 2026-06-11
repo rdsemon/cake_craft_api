@@ -2,13 +2,26 @@ import { eq } from "drizzle-orm";
 import db from "../../database.js";
 import cakeTable from "../../models/cake.model.js";
 import AppError from "../../utils/AppError.js";
+import { sql } from "drizzle-orm";
 import type {
   CreateCakeBody,
   UpdateCakeBody,
 } from "../../zodSchema/cake.schema.js";
 
-export const getAllCakesService = async () => {
-  return await db.select().from(cakeTable);
+export const getAllCakesService = async (search: string) => {
+  let cakes;
+  if (search) {
+    cakes = await db
+      .select()
+      .from(cakeTable)
+      .where(
+        sql`to_tsvector('english', ${cakeTable.title}) @@ to_tsquery('english', ${search})`,
+      );
+  } else {
+    cakes = await db.select().from(cakeTable);
+  }
+
+  return cakes;
 };
 
 export const getOneCakeService = async (id: string) => {
