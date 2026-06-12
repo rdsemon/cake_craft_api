@@ -9,7 +9,8 @@ import {
 } from "../services/cake/cakeDb.service.js";
 
 export const getAllCakes = asyncHandler(async (req, res) => {
-  const cakes = await getAllCakesService();
+  const search = req.params.search as string;
+  const cakes = await getAllCakesService(search);
   res
     .status(200)
     .json({ status: "successful", total: cakes.length, data: cakes });
