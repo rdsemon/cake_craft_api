@@ -1,27 +1,72 @@
-import { eq } from "drizzle-orm";
+import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
 import db from "../../database.js";
 import cakeTable from "../../models/cake.model.js";
 import AppError from "../../utils/AppError.js";
-import { sql } from "drizzle-orm";
+
 import type {
   CreateCakeBody,
   UpdateCakeBody,
 } from "../../zodSchema/cake.schema.js";
 
-export const getAllCakesService = async (search: string) => {
-  let cakes;
-  if (search) {
-    cakes = await db
-      .select()
-      .from(cakeTable)
-      .where(
-        sql`to_tsvector('english', ${cakeTable.title}) @@ to_tsquery('english', ${search})`,
-      );
-  } else {
-    cakes = await db.select().from(cakeTable);
+export const getAllCakesService = async (options: any) => {
+  console.log(options);
+  const conditions = [];
+
+  // Search
+  if (options.search) {
+    conditions.push(
+      sql`to_tsvector('english', ${cakeTable.title})
+          @@ plainto_tsquery('english', ${options.search})`,
+    );
   }
 
-  return cakes;
+  // Price Filter
+  if (options.minPrice) {
+    conditions.push(gte(cakeTable.price, Number(options.minPrice)));
+  }
+
+  if (options.maxPrice) {
+    conditions.push(lte(cakeTable.price, Number(options.maxPrice)));
+  }
+
+  const query = db.select().from(cakeTable);
+
+  if (conditions.length) {
+    query.where(and(...conditions));
+  }
+
+  // Sorting
+  switch (options.sort) {
+    case "price-asc":
+      query.orderBy(asc(cakeTable.price));
+      break;
+
+    case "price-desc":
+      query.orderBy(desc(cakeTable.price));
+      break;
+
+    case "title":
+      query.orderBy(asc(cakeTable.title));
+      break;
+
+    default:
+      query.orderBy(desc(cakeTable.createdAt));
+  }
+
+  // Pagination
+  const page = Number(options.page) || 1;
+  const limit = Number(options.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  query.limit(limit).offset(offset);
+
+  const cakes = await query;
+
+  return {
+    cakes,
+    page,
+    limit,
+  };
 };
 
 export const getOneCakeService = async (id: string) => {
