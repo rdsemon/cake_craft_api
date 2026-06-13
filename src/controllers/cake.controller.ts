@@ -9,11 +9,17 @@ import {
 } from "../services/cake/cakeDb.service.js";
 
 export const getAllCakes = asyncHandler(async (req, res) => {
-  const search = req.params.search as string;
-  const cakes = await getAllCakesService(search);
+  const options = req.query;
+  const result = await getAllCakesService(options);
   res
     .status(200)
-    .json({ status: "successful", total: cakes.length, data: cakes });
+    .json({
+      status: "successful",
+      total: result.cakes.length,
+      data: result.cakes,
+      page: result.page,
+      limit: result.limit,
+    });
 });
 
 export const createCake = asyncHandler(async (req, res) => {
