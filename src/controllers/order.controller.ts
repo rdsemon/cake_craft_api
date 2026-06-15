@@ -5,8 +5,9 @@ import {
   getOrderByIdService,
 } from "../services/order/order.service.js";
 import AppError from "../utils/AppError.js";
+import type { Request, Response, NextFunction } from "express";
 
-export const createOrder = asyncHandler(async (req, res, next) => {
+export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   const { recipientName, phone, address, city } = req.body;
@@ -21,7 +22,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   res.status(201).json({ status: "successfull", id: order.id });
 });
 
-export const getMyOders = asyncHandler(async (req, res) => {
+export const getMyOders = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   const orders = await getMyOrdersService(userId);
@@ -31,13 +32,15 @@ export const getMyOders = asyncHandler(async (req, res) => {
     .json({ status: "successfull", totalOrders: orders.length, data: orders });
 });
 
-export const getOrders = asyncHandler(async (req, res, next) => {
-  const userId = req.user.id;
-  const orderId = req.params.orderId as string;
-  if (!orderId) {
-    return next(new AppError("Order id not found", 404));
-  }
-  const orders = await getOrderByIdService(userId, orderId);
+export const getOrders = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+    const orderId = req.params.orderId as string;
+    if (!orderId) {
+      return next(new AppError("Order id not found", 404));
+    }
+    const orders = await getOrderByIdService(userId, orderId);
 
-  res.status(200).json({ status: "successfull", data: orders });
-});
+    res.status(200).json({ status: "successfull", data: orders });
+  },
+);
