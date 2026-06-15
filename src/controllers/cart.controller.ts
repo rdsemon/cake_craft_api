@@ -7,8 +7,9 @@ import {
   getCartService,
   removeCartItemService,
 } from "../services/cart/cartDb.service.js";
+import type { Request, Response } from "express";
 
-export const addToCart = asyncHandler(async (req, res) => {
+export const addToCart = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.user.id;
   const { quantity, cakeId } = req.body;
 
@@ -17,7 +18,7 @@ export const addToCart = asyncHandler(async (req, res) => {
   res.status(201).json({ status: "successful", message: "add to the cart" });
 });
 
-export const getCart = asyncHandler(async (req, res) => {
+export const getCart = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.user.id;
 
   const { cart, items } = await getCartService(userId);
@@ -25,7 +26,7 @@ export const getCart = asyncHandler(async (req, res) => {
   res.status(200).json({ stauts: "successful", cart, items });
 });
 
-export const decreaseCartItemQuantity = asyncHandler(async (req, res) => {
+export const decreaseCartItemQuantity = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.user.id;
   const { cakeId } = req.body;
   const updatedItem = await decreaseCartItemQuantityService(userId, cakeId);
@@ -37,7 +38,7 @@ export const decreaseCartItemQuantity = asyncHandler(async (req, res) => {
   });
 });
 
-export const removeCartItem = asyncHandler(async (req, res) => {
+export const removeCartItem = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.user.id;
   const cakeId = req.params.cakeId as string;
 
@@ -49,7 +50,7 @@ export const removeCartItem = asyncHandler(async (req, res) => {
   });
 });
 
-export const clearCart = asyncHandler(async (req, res) => {
+export const clearCart = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.user.id;
 
   await clearCartService(userId);
