@@ -1,17 +1,21 @@
-import { eq } from "drizzle-orm";
 import db from "../database.js";
-import { usersTable } from "../models/user.model.js";
+import { eq } from "drizzle-orm";
 import AppError from "../utils/AppError.js";
-import asyncHandler from "../utils/asyncHandler.js";
-import { comparePass, createHashPass } from "../utils/passwordGenerator.js";
-import type { signUpBody, loginBody } from "../zodSchema/auth.schema.js";
-import { generateJwtToken, verifyToken } from "../utils/sendJwt.js";
-import sendJwtCooke from "../utils/sendJwtCookie.js";
 import type { JwtPayload } from "jsonwebtoken";
-import { signUpService, loginService } from "../services/auth/authDb.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { usersTable } from "../models/user.model.js";
+import sendJwtCooke from "../utils/sendJwtCookie.js";
+import type { Request, Response, NextFunction } from "express";
+import { generateJwtToken, verifyToken } from "../utils/sendJwt.js";
+import type { signUpBody, loginBody } from "../zodSchema/auth.schema.js";
+import { comparePass, createHashPass } from "../utils/passwordGenerator.js";
+import {
+  signUpService,
+  loginService,
+} from "../services/auth/authDb.service.js";
 
 // user signUp
-export const signUp = asyncHandler(async (req, res, next) => {
+export const signUp = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body as signUpBody;
 
   const hashPass = await createHashPass(password);
@@ -24,50 +28,54 @@ export const signUp = asyncHandler(async (req, res, next) => {
 });
 
 // user login
-export const login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body as loginBody;
+export const login = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body as loginBody;
 
-  const user = await loginService(email);
+    const user = await loginService(email);
 
-  const isCorrectPass = await comparePass(password, user.password);
+    const isCorrectPass = await comparePass(password, user.password);
 
-  if (!isCorrectPass) {
-    return next(new AppError("Wrong email or password", 401));
-  }
+    if (!isCorrectPass) {
+      return next(new AppError("Wrong email or password", 401));
+    }
 
-  const jwtToken = generateJwtToken(user.id);
+    const jwtToken = generateJwtToken(user.id);
 
-  sendJwtCooke(res, jwtToken);
+    sendJwtCooke(res, jwtToken);
 
-  res.status(200).json({ status: "successful", message: "login successful" });
-});
+    res.status(200).json({ status: "successful", message: "login successful" });
+  },
+);
 
-export const protect = asyncHandler(async (req, res, next) => {
-  const { token } = req.cookies;
+export const protect = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.cookies;
 
-  const decode = verifyToken(token) as JwtPayload;
-  const { userId } = decode;
+    const decode = verifyToken(token) as JwtPayload;
+    const { userId } = decode;
 
-  const [user] = await db
-    .select({
-      id: usersTable.id,
-      email: usersTable.email,
-      role: usersTable.role,
-    })
-    .from(usersTable)
-    .where(eq(usersTable.id, userId));
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        role: usersTable.role,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
 
-  if (!user) {
-    return next(new AppError("Please loign first", 401));
-  }
+    if (!user) {
+      return next(new AppError("Please loign first", 401));
+    }
 
-  req.user = user;
+    req.user = user;
 
-  next();
-});
+    next();
+  },
+);
 
 export const restrictedTo = (rules: string[]) =>
-  asyncHandler((req, res, next) => {
+  asyncHandler((req: Request, res: Response, next: NextFunction) => {
     if (!rules.includes(req.user.role)) {
       return next(new AppError("you are not permited to do this action", 403));
     }
@@ -76,7 +84,7 @@ export const restrictedTo = (rules: string[]) =>
   });
 
 export const checkOwnership = (paramKey = "id") =>
-  asyncHandler((req, res, next) => {
+  asyncHandler((req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return next(new AppError("Not authenticated", 401));
     }
