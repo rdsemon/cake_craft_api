@@ -8,67 +8,78 @@ import {
   getUserService,
   updateUserService,
 } from "../services/user/userDb.service.js";
+import type { Request, Response, NextFunction } from "express";
 
 // get all the users from database
-export const getAllUsers = asyncHandler(async (req, res) => {
+export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await getAllUsersService();
 
   res.status(200).json({ status: "successful", total: users.length, users });
 });
 
 //get user data by their id
-export const getUserById = asyncHandler(async (req, res, next) => {
-  const id = req.params.id as string;
+export const getUserById = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id as string;
 
-  if (!id) {
-    return next(new AppError("Id is required", 400));
-  }
+    if (!id) {
+      return next(new AppError("Id is required", 400));
+    }
 
-  const user = await getUserService(id);
+    const user = await getUserService(id);
 
-  res.status(200).json({ status: "successful", user });
-});
+    res.status(200).json({ status: "successful", user });
+  },
+);
 
 // update user data in database
-export const updateUser = asyncHandler(async (req, res, next) => {
-  const userData = req.body as updateUserBody;
-  const id = req.params.id as string;
+export const updateUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userData = req.body as updateUserBody;
+    const id = req.params.id as string;
 
-  if (!id) {
-    return next(new AppError("Id is required", 404));
-  }
+    if (!id) {
+      return next(new AppError("Id is required", 404));
+    }
 
-  const user = await getUserService(id);
+    const user = await getUserService(id);
 
-  if (userData.email === user.email && userData.name === user.name) {
-    return res.status(200).json({ message: "Already up to date" });
-  }
-  const updatedUser = await updateUserService(userData, id);
+    if (userData.email === user.email && userData.name === user.name) {
+      return res.status(200).json({ message: "Already up to date" });
+    }
+    const updatedUser = await updateUserService(userData, id);
 
-  res.status(200).json({
-    status: "successful",
-    message: `User update successful ${updatedUser.id}`,
-  });
-});
+    res.status(200).json({
+      status: "successful",
+      message: `User update successful ${updatedUser.id}`,
+    });
+  },
+);
 
 //Delete user from the database by their id
-export const deleteUserById = asyncHandler(async (req, res, next) => {
-  const id = req.params.id as string;
-  if (!id) {
-    return next(new AppError("Id is required", 400));
-  }
-  // check if the user exist
-  await getUserService(id);
-  // delete the user
-  await deleteuserService(id);
+export const deleteUserById = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id as string;
+    if (!id) {
+      return next(new AppError("Id is required", 400));
+    }
+    // check if the user exist
+    await getUserService(id);
+    // delete the user
+    await deleteuserService(id);
 
-  res
-    .status(200)
-    .json({ status: "sucessful", message: "Account delete successful" });
-});
+    res
+      .status(200)
+      .json({ status: "sucessful", message: "Account delete successful" });
+  },
+);
 
 //Delete all the users
-export const deleteAllUsers = asyncHandler(async (req, res) => {
-  await deleteAllUsersService();
-  res.status(200).json({ status: "successful", message: "All users deleted" });
-});
+export const deleteAllUsers = asyncHandler(
+  async (req: Request, res: Response) => {
+    await deleteAllUsersService();
+    res
+      .status(200)
+      .json({ status: "successful", message: "All users deleted" });
+  },
+);
