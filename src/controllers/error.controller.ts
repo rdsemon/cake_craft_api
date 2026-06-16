@@ -1,8 +1,16 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import AppError from "../utils/AppError.js";
+import type { DatabaseError } from "../types/dbType.js";
 
-const sendErrorDev = (error: any, res: Response) => {
+type ErrorType = (AppError | ZodError | DatabaseError | Error) & {
+  status?: string;
+  statusCode?: number;
+  message: string;
+  name?: string;
+};
+
+const sendErrorDev = (error: ErrorType, res: Response) => {
   res.status(error.statusCode || 500).json({
     status: error.status,
     err: error,
@@ -11,8 +19,8 @@ const sendErrorDev = (error: any, res: Response) => {
   });
 };
 
-const sendErrorProd = (error: any, res: Response) => {
-  if (error.isOperational) {
+const sendErrorProd = (error: ErrorType, res: Response) => {
+  if (error instanceof AppError && error.isOperational) {
     return res.status(error.statusCode).json({
       status: error.status,
       message: error.message,
@@ -27,7 +35,7 @@ const sendErrorProd = (error: any, res: Response) => {
   });
 };
 
-const handleJwtExpireError = (error: any) =>
+const handleJwtExpireError = (error: Error): AppError =>
   new AppError(`${error.message}. Please login again`, 401);
 
 const handleJwtError = () =>
@@ -39,25 +47,25 @@ const handleZodError = (error: ZodError) => {
   return new AppError(message, 400);
 };
 
-const handleDuplicateError = (error: any) => {
+const handleDuplicateError = (error: DatabaseError): AppError => {
   const field = error.detail?.match(/\((.*?)\)/)?.[1];
 
   return new AppError(`${field || "Email"} already exists`, 409);
 };
 
-const handleForeignKeyError = () =>
+const handleForeignKeyError = (): AppError =>
   new AppError("Referenced resource does not exist", 400);
 
-const handleNotNullError = (error: any) => {
+const handleNotNullError = (error: DatabaseError): AppError => {
   return new AppError(`${error.column} is required`, 400);
 };
 
 const handleGlobalError = (
-  err: any,
+  err: ErrorType,
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   err.message = err.message || "Something went wrong";
   err.status = err.status || "error";
   err.statusCode = err.statusCode || 500;
@@ -65,13 +73,13 @@ const handleGlobalError = (
   if (process.env.NODE_ENV === "development") {
     return sendErrorDev(err, res);
   }
-
   if (process.env.NODE_ENV === "production") {
-    let error = err;
+    let error: ErrorType = err;
+    const dbError = error as DatabaseError;
 
     // JWT
     if (error.name === "TokenExpiredError") {
-      error = handleJwtExpireError(error);
+      error = handleJwtExpireError(error as Error);
     }
 
     if (error.name === "JsonWebTokenError") {
@@ -84,17 +92,16 @@ const handleGlobalError = (
     }
 
     // PostgreSQL / Drizzle
-
-    if (error?.cause?.code === "23505") {
-      error = handleDuplicateError(error);
+    if (dbError?.cause?.code === "23505") {
+      error = handleDuplicateError(error as DatabaseError);
     }
 
-    if (error?.cause?.code === "23503") {
+    if (dbError?.cause?.code === "23503") {
       error = handleForeignKeyError();
     }
 
-    if (error?.cause?.code === "23502") {
-      error = handleNotNullError(error);
+    if (dbError?.cause?.code === "23502") {
+      error = handleNotNullError(error as DatabaseError);
     }
 
     sendErrorProd(error, res);
