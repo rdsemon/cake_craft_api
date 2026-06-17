@@ -2,14 +2,14 @@ import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
 import db from "../../database.js";
 import cakeTable from "../../models/cake.model.js";
 import AppError from "../../utils/AppError.js";
+import type { GetCakesOptions } from "../../types/controllerTypes.js";
 
 import type {
   CreateCakeBody,
   UpdateCakeBody,
 } from "../../zodSchema/cake.schema.js";
 
-export const getAllCakesService = async (options: any) => {
-  console.log(options);
+export const getAllCakesService = async (options: GetCakesOptions) => {
   const conditions = [];
 
   // Search
