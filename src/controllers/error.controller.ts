@@ -1,14 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import AppError from "../utils/AppError.js";
-import type { DatabaseError } from "../types/dbType.js";
-
-type ErrorType = (AppError | ZodError | DatabaseError | Error) & {
-  status?: string;
-  statusCode?: number;
-  message: string;
-  name?: string;
-};
+import type { DatabaseError, ErrorType } from "../types/controllerTypes.js";
 
 const sendErrorDev = (error: ErrorType, res: Response) => {
   res.status(error.statusCode || 500).json({
