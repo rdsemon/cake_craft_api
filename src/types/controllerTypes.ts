@@ -25,3 +25,10 @@ export interface GetCakesOptions {
   page?: string | number;
   limit?: string | number;
 }
+
+export interface CartItem {
+  cakeId: string;
+  quantity: number;
+  subtotal: number | null;
+  unitPrice: number;
+}
