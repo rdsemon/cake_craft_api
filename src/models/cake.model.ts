@@ -55,7 +55,7 @@ export const cakeTable = pgTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table: any) => [
+  (table) => [
     index("title_search_index").using(
       "gin",
       sql`to_tsvector('english', ${table.title})`,
