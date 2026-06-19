@@ -1,10 +1,10 @@
-import { desc, eq } from "drizzle-orm";
-import { orders, orderItems } from "../../models/order.model.js";
-import { carts, cartItems } from "../../models/cart.model.js";
-import cakeTable from "../../models/cake.model.js";
-
-import AppError from "../../utils/AppError.js";
 import db from "../../database.js";
+import { desc, eq } from "drizzle-orm";
+import AppError from "../../utils/AppError.js";
+import cakeTable from "../../models/cake.model.js";
+import { carts, cartItems } from "../../models/cart.model.js";
+import type { CartItem } from "../../types/controllerTypes.js";
+import { orders, orderItems } from "../../models/order.model.js";
 
 export const createOrderService = async (
   userId: string,
@@ -15,7 +15,7 @@ export const createOrderService = async (
     city: string;
   },
 ) => {
-  return db.transaction(async (tx: any) => {
+  return db.transaction(async (tx) => {
     const [cart] = await tx
       .select()
       .from(carts)
@@ -41,7 +41,7 @@ export const createOrderService = async (
     }
 
     const totalAmount = items.reduce(
-      (acc: any, item: any) => acc + Number(item.subtotal),
+      (acc: number, item: CartItem) => acc + Number(item.subtotal),
       0,
     );
 
@@ -57,13 +57,17 @@ export const createOrderService = async (
       })
       .returning();
 
+    if (!order) {
+      throw new AppError("Failed to create order", 500);
+    }
+
     await tx.insert(orderItems).values(
-      items.map((item: any) => ({
+      items.map((item: CartItem) => ({
         orderId: order.id,
         cakeId: item.cakeId,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
-        subtotal: item.subtotal,
+        subtotal: Number(item.subtotal ?? 0),
       })),
     );
 

@@ -12,7 +12,7 @@ export default defineConfig(
       "no-console": "warn",
       "no-debugger": "error",
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-non-null-assertion": "off",
       "arrow-body-style": "off",
       eqeqeq: ["error", "always"],

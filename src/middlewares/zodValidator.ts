@@ -1,8 +1,10 @@
 import type { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError.js";
+import type { ZodType } from "zod";
 
 const validateInput =
-  (schema: any) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodType) =>
+  (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse({
       body: req.body,
       params: req.params,
@@ -10,16 +12,16 @@ const validateInput =
 
     if (!result.success) {
       const errorMessage = result.error.issues
-        .map((el: any) => el.message)
+        .map((el) => el.message)
         .join(" , ");
 
       return next(new AppError(errorMessage, 400));
     }
 
-    const { body, params } = result.data;
+    const { body, params } = result.data as Record<string, unknown>;
 
     req.body = body;
-    req.params = params;
+    req.params = params as Record<string, string>;
 
     next();
   };
