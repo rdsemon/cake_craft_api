@@ -184,15 +184,15 @@ npm start
 
 # 📚 API Endpoints
 
-## 🍕 Pizza
+## 🎂 Cake
 
-| Method | Endpoint            |
-| ------ | ------------------- |
-| GET    | `/api/v1/pizza`     |
-| GET    | `/api/v1/pizza/:id` |
-| POST   | `/api/v1/pizza`     |
-| PATCH  | `/api/v1/pizza/:id` |
-| DELETE | `/api/v1/pizza/:id` |
+| Method | Endpoint           |
+| ------ | ------------------ |
+| GET    | `/api/v1/cake`     |
+| GET    | `/api/v1/cake/:id` |
+| POST   | `/api/v1/cake`     |
+| PATCH  | `/api/v1/cake/:id` |
+| DELETE | `/api/v1/cake/:id` |
 
 ---
 
