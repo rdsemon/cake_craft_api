@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import morgan from "morgan";
 import cakeRouter from "./routes/cake.routes.js";
 import authRouter from "./routes/auth.routes.js";
@@ -11,6 +12,13 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { apiLimiter, authLimiter } from "./middlewares/rateLimiter.js";
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
+);
 
 app.use(express.json({ limit: "120kb" }));
 app.use(express.static("public"));
