@@ -188,11 +188,11 @@ npm start
 
 | Method | Endpoint           |
 | ------ | ------------------ |
-| GET    | `/api/v1/cake`     |
-| GET    | `/api/v1/cake/:id` |
-| POST   | `/api/v1/cake`     |
-| PATCH  | `/api/v1/cake/:id` |
-| DELETE | `/api/v1/cake/:id` |
+| GET    | `/api/v1/cakes`     |
+| GET    | `/api/v1/cakes/:id` |
+| POST   | `/api/v1/cakes`     |
+| PATCH  | `/api/v1/cakes/:id` |
+| DELETE | `/api/v1/cakes/:id` |
 
 ---
 
