@@ -220,10 +220,10 @@ npm start
 
 | Method | Endpoint            |
 | ------ | ------------------- |
-| GET    | `/api/v1/order`     |
-| POST   | `/api/v1/order`     |
-| PATCH  | `/api/v1/order/:id` |
-| DELETE | `/api/v1/order/:id` |
+| GET    | `/api/v1/orders`     |
+| POST   | `/api/v1/orders`     |
+| PATCH  | `/api/v1/orders/:id` |
+| DELETE | `/api/v1/orders/:id` |
 
 ---
 
@@ -231,10 +231,10 @@ npm start
 
 | Method | Endpoint           |
 | ------ | ------------------ |
-| GET    | `/api/v1/user`     |
-| GET    | `/api/v1/user/:id` |
-| PATCH  | `/api/v1/user/:id` |
-| DELETE | `/api/v1/user/:id` |
+| GET    | `/api/v1/users`     |
+| GET    | `/api/v1/users/:id` |
+| PATCH  | `/api/v1/users/:id` |
+| DELETE | `/api/v1/users/:id` |
 
 ---
 
@@ -242,10 +242,10 @@ npm start
 
 | Method | Endpoint             |
 | ------ | -------------------- |
-| GET    | `/api/v1/review`     |
-| POST   | `/api/v1/review`     |
-| PATCH  | `/api/v1/review/:id` |
-| DELETE | `/api/v1/review/:id` |
+| GET    | `/api/v1/reviews`     |
+| POST   | `/api/v1/reviews`     |
+| PATCH  | `/api/v1/reviews/:id` |
+| DELETE | `/api/v1/reviews/:id` |
 
 ---
 
