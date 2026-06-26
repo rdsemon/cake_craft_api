@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.use(protect);
 
-router.post("/order", validateInput(createOrderSchema), createOrder);
-router.get("/order", getMyOders);
-router.get("/order/:orderId", getOrders);
+router.post("/orders", validateInput(createOrderSchema), createOrder);
+router.get("/orders", getMyOders);
+router.get("/orders/:orderId", getOrders);
 
 export default router;
