@@ -15,7 +15,7 @@ export const apiLimiter = rateLimit({
 
 export const authLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 min
-  limit: 5,
+  limit: 500,
 
   standardHeaders: true,
   legacyHeaders: false,
@@ -30,7 +30,7 @@ export const authLimiter = rateLimit({
 
 export const strictLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  limit: 3,
+  limit: 300,
 
   standardHeaders: true,
   legacyHeaders: false,
