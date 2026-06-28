@@ -28,8 +28,6 @@ export const cakeTable = pgTable(
     }).notNull(),
     quantity: integer("quantity").default(1).notNull(),
 
-    inStock: integer("in_stock").default(1).notNull(),
-
     isAvailable: boolean("is_available").default(true).notNull(),
 
     coverImage: varchar("cover_image", { length: 500 })
