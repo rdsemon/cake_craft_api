@@ -13,13 +13,17 @@ import helmet from "helmet";
 import { apiLimiter, authLimiter } from "./middlewares/rateLimiter.js";
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://cake-craft-api.onrender.com",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
-
 app.use(express.json({ limit: "120kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
