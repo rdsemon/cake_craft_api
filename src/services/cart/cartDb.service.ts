@@ -77,6 +77,27 @@ export const getCartService = async (userId: string) => {
   };
 };
 
+export const increaseCartItemQuantityService = async (
+  userId: string,
+  cakeId: string,
+) => {
+  const cart = await getOrCreateCart(userId);
+  const cartItem = await checkExistingItem(cakeId, cart.id);
+  if (!cartItem) {
+    throw new AppError("Item not found in cart", 404);
+  }
+
+  const cake = await findCakeById(cakeId);
+
+  const updatedQuantity = cartItem.quantity + 1;
+  const updatedPrice = updatedQuantity * Number(cake.price);
+
+  return await updateCartItem(cakeId, cart.id, {
+    quantity: updatedQuantity,
+    price: updatedPrice,
+  });
+};
+
 export const decreaseCartItemQuantityService = async (
   userId: string,
   cakeId: string,
