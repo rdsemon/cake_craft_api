@@ -45,7 +45,7 @@ export const updateCakeInfo = asyncHandler(
     await updateCakeService(id, req.body);
     res
       .status(200)
-      .json({ status: "successful", message: "update successfull" });
+      .json({ status: "successful", message: "update successful" });
   },
 );
 
@@ -57,7 +57,9 @@ export const deleteCakeById = asyncHandler(
     //delete cake
     await deleteCakeService(id);
 
-    res.status(204).send();
+    res
+      .status(204)
+      .json({ status: "successful", message: "Delete successful" });
   },
 );
 
