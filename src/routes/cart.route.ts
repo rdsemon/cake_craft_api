@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   addToCart,
   getCart,
+  increaseCartItemQuantity,
   decreaseCartItemQuantity,
   removeCartItem,
   clearCart,
@@ -13,6 +14,7 @@ router.use(protect);
 
 router.post("/cart", addToCart);
 router.get("/cart", getCart);
+router.patch("/cart/increase", increaseCartItemQuantity);
 router.patch("/cart/decrease", decreaseCartItemQuantity);
 router.delete("/cart/remove/:cakeId", removeCartItem);
 router.delete("/cart/clear", clearCart);
