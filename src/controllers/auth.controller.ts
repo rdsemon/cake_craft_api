@@ -44,7 +44,9 @@ export const login = asyncHandler(
 
     sendJwtCooke(res, jwtToken);
 
-    res.status(200).json({ status: "successful", message: "login successful" });
+    res
+      .status(200)
+      .json({ status: "successful", message: "login successful", id: user.id });
   },
 );
 
