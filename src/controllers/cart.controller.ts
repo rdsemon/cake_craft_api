@@ -3,13 +3,14 @@ import asyncHandler from "../utils/asyncHandler.js";
 import {
   addToCartService,
   clearCartService,
+  increaseCartItemQuantityService,
   decreaseCartItemQuantityService,
   getCartService,
   removeCartItemService,
 } from "../services/cart/cartDb.service.js";
 import type { Request, Response } from "express";
 
-export const addToCart = asyncHandler(async (req:Request, res:Response) => {
+export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
   const { quantity, cakeId } = req.body;
 
@@ -18,7 +19,7 @@ export const addToCart = asyncHandler(async (req:Request, res:Response) => {
   res.status(201).json({ status: "successful", message: "add to the cart" });
 });
 
-export const getCart = asyncHandler(async (req:Request, res:Response) => {
+export const getCart = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   const { cart, items } = await getCartService(userId);
@@ -26,31 +27,46 @@ export const getCart = asyncHandler(async (req:Request, res:Response) => {
   res.status(200).json({ stauts: "successful", cart, items });
 });
 
-export const decreaseCartItemQuantity = asyncHandler(async (req:Request, res:Response) => {
-  const userId = req.user.id;
-  const { cakeId } = req.body;
-  const updatedItem = await decreaseCartItemQuantityService(userId, cakeId);
+export const increaseCartItemQuantity = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user.id;
+    const { cakeId } = req.body;
+    await increaseCartItemQuantityService(userId, cakeId);
+    res
+      .status(200)
+      .json({ status: "successful", message: "Quantity updated by one" });
+  },
+);
 
-  res.status(200).json({
-    status: "success",
-    message: "Quantity decreased",
-    data: updatedItem,
-  });
-});
+export const decreaseCartItemQuantity = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user.id;
+    const { cakeId } = req.body;
+    const updatedItem = await decreaseCartItemQuantityService(userId, cakeId);
 
-export const removeCartItem = asyncHandler(async (req:Request, res:Response) => {
-  const userId = req.user.id;
-  const cakeId = req.params.cakeId as string;
+    res.status(200).json({
+      status: "success",
+      message: "Quantity decreased",
+      data: updatedItem,
+    });
+  },
+);
 
-  await removeCartItemService(userId, cakeId);
+export const removeCartItem = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user.id;
+    const cakeId = req.params.cakeId as string;
 
-  res.status(200).json({
-    status: "success",
-    message: "Item removed from cart",
-  });
-});
+    await removeCartItemService(userId, cakeId);
 
-export const clearCart = asyncHandler(async (req:Request, res:Response) => {
+    res.status(200).json({
+      status: "success",
+      message: "Item removed from cart",
+    });
+  },
+);
+
+export const clearCart = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   await clearCartService(userId);
