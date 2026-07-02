@@ -92,6 +92,10 @@ export const increaseCartItemQuantityService = async (
   const updatedQuantity = cartItem.quantity + 1;
   const updatedPrice = updatedQuantity * Number(cake.price);
 
+  if (cake.quantity < updatedQuantity) {
+    throw new AppError("Out of stock", 404);
+  }
+
   return await updateCartItem(cakeId, cart.id, {
     quantity: updatedQuantity,
     price: updatedPrice,
