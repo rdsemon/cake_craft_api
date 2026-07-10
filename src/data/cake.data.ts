@@ -55,7 +55,7 @@ export const cakesData = [
     price: 22.0,
     quantity: 6,
     coverImage:
-      "https://res.cloudinary.com/dz6gmlrjf/image/upload/v1783604524/strawberry-cake_gfnatd.jpg",
+      "https://res.cloudinary.com/dz6gmlrjf/image/upload/v1783604524/strawberry-cake-01.jpg",
     publicId: "strawberry-cake-01",
     isAvailable: true,
     userId: "2f4cff97-05fa-4a9d-8d75-0e9c4d07ab4d",
