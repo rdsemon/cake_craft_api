@@ -11,11 +11,19 @@ const validateInput =
     });
 
     if (!result.success) {
-      const errorMessage = result.error.issues
-        .map((el) => el.message)
-        .join(" , ");
+      const formattedErrors: string = result.error.issues
+        .map((issue) => {
+          const filed = issue.path[1];
+          const errorMessage =
+            issue.code === "invalid_type" && issue.input === undefined
+              ? `${String(filed)} field is missing`
+              : issue.message;
 
-      return next(new AppError(errorMessage, 400));
+          return errorMessage;
+        })
+        .join(", ");
+
+      return next(new AppError(formattedErrors, 400));
     }
 
     const { body, params } = result.data as Record<string, unknown>;
