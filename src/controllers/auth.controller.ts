@@ -62,6 +62,8 @@ export const protect = asyncHandler(
         id: usersTable.id,
         email: usersTable.email,
         role: usersTable.role,
+        name: usersTable.name,
+        image: usersTable.image,
       })
       .from(usersTable)
       .where(eq(usersTable.id, userId));
@@ -84,6 +86,10 @@ export const restrictedTo = (rules: string[]) =>
 
     next();
   });
+
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
+  res.status(200).json({ status: "successful", data: req.user });
+});
 
 export const checkOwnership = (paramKey = "id") =>
   asyncHandler((req: Request, res: Response, next: NextFunction) => {
