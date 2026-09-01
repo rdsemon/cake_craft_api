@@ -107,3 +107,8 @@ export const checkOwnership = (paramKey = "id") =>
 
     next();
   });
+
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ status: "successful", message: "Logout successful" });
+});
